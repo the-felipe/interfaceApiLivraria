@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Exemplo de Requisição HTTP</title>
+        <script src="token.js"></script>
+    </head>
+    <body>
+        <h1>Biblioteca Batlip</h1>
+
+        <div id="root">
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+
+            const root = document.getElementById("root")
+
+            async function fazerRequisicao() {
+                url = 'https://livraria-app.herokuapp.com/api/livros/';
+                headers = await pegarHeader()
+
+                const resposta = await axios.get(url, { headers })
+
+                for(const livro of resposta.data) {
+
+                    const ISBN = livro.ISBN
+                    const titulo = livro.titulo
+                    const categoria = livro.categoria
+                    const autor = livro.autor
+                    const preco = livro.preco
+                    const quantidade = livro.quantidade
+
+                    const pISBN = document.createElement("p")
+                    pISBN.innerText = "ISBN: " + ISBN
+
+                    const pTitulo = document.createElement("p")
+                    pTitulo.innerText = "Titulo: " + titulo
+
+                    const pCategoria = document.createElement("p")
+                    pCategoria.innerText = "Categoria: " + categoria
+
+                    const pAutor = document.createElement("p")
+                    pAutor.innerText = "Autor: " + autor
+
+                    const pPreco = document.createElement("p")
+                    pPreco.innerText = "Preco: " + preco
+
+                    const pQuantidade = document.createElement("p")
+                    pQuantidade.innerText = "Quantidade: " + quantidade
+
+                    ISBN
+titulo
+categoria
+autor
+preco
+quantidade
+
+
+
+
+
+
+                    console.log(livro)
+                    p = document.createElement("p")
+                    p.innerText = livro.titulo
+                    root.appendChild(p)
+                    p2 = document.createElement("p")
+                    p2.innerText = livro.categoria.nome
+                    root.appendChild(p2)
+                }
+            }
+
+            async function pegarHeader(){
+                let url = 'https://livraria-app.herokuapp.com/api/token/';
+                let data = {
+                    username: 'mateus.battu',
+                    password: '13DbOxNI'
+                };
+                const resposta = await axios.post(url, data)
+                headers = {
+                    'Authorization': `Bearer ${resposta.data.access}`
+                };
+                return headers
+            }
+
+            window.addEventListener("load", fazerRequisicao)
+        </script>
+    </body>
+    </html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Exemplo de Requisição HTTP</title>
+        <script src="token.js"></script>
+    </head>
+    <body>
+        <h1>Biblioteca Batlip</h1>
+
+        <div id="root">
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+
+            const root = document.getElementById("root")
+
+            async function fazerRequisicao() {
+                url = 'https://livraria-app.herokuapp.com/api/livros/';
+                headers = await pegarHeader()
+
+                const resposta = await axios.get(url, { headers })
+
+                for(const livro of resposta.data) {
+
+                    
+                    titulo
+
+                    console.log(livro)
+                    p = document.createElement("p")
+                    p.innerText = livro.titulo
+                    root.appendChild(p)
+                    p2 = document.createElement("p")
+                    p2.innerText = livro.categoria.nome
+                    root.appendChild(p2)
+                }
+            }
+
+            async function pegarHeader(){
+                let url = 'https://livraria-app.herokuapp.com/api/token/';
+                let data = {
+                    username: 'mateus.battu',
+                    password: '13DbOxNI'
+                };
+                const resposta = await axios.post(url, data)
+                headers = {
+                    'Authorization': `Bearer ${resposta.data.access}`
+                };
+                return headers
+            }
+
+            window.addEventListener("load", fazerRequisicao)
+        </script>
+    </body>
+    </html>

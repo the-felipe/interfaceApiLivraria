@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Livro</title>
+
+    <script src="token.js"></script>
+
+    <script>
+        const token = pegarToken();
+        if(token == null) window.location.replace("./index.html");
+    </script>
+</head>
+<body>
+    
+    <a href="./home.html">Ver Livros</a>
+
+    <form action="" id="form">
+        <label for="titulo">Titulo</label>
+        <input type="text" name="titulo" id="titulo">
+        <br>
+        <label for="isbn">isbn</label>
+        <input type="text" name="isbn" id="isbn">
+        <br>
+        <label for="quantidade">quantidade</label>
+        <input type="text" name="quantidade" id="quantidade">
+        <br>
+        <label for="categoria">Categoria</label>        
+        <select name="categoria" id="categoria"></select>
+        <br>
+        <label for="editora">Editora</label>        
+        <select name="editora" id="editora"></select>
+        <br>
+        <label for="autor1">Autor 1</label>
+        <select name="autor1" id="autor1"></select>
+        <br>
+        <label for="autor2">Autor 2</label>
+        <select name="autor2" id="autor2"></select>
+        <hr>
+        <input type="submit" value="Adicionar">
+    </form>
+    
+    <script>
+
+        const form = document.getElementById("form")
+
+        const titulo = document.getElementById("titulo")
+        const isbn = document.getElementById("isbn")
+        const quantidade = document.getElementById("quantidade")
+        const categoria = document.getElementById("categoria")
+        const editora = document.getElementById("editora")
+        const autor1 = document.getElementById("autor1")
+        const autor2 = document.getElementById("autor2")
+
+        function adicionar(e) {
+            e.preventDefault()
+
+            const body = {
+                titulo: titulo.value,
+                isbn: isbn.value,
+                quantidade: +quantidade.value,
+                categoria: +categoria.value,
+                editora: +editora.value,
+                autores: [+autor1.value, +autor2.value]
+            }
+        }
+
+        async function preencher() {
+
+            let autores = await getAutenticado("https://livraria-app.herokuapp.com/api/autores/")
+            autores = await autores.json()
+
+            let categorias = await getAutenticado("https://livraria-app.herokuapp.com/api/categorias/")
+            categorias = await categorias.json()
+
+            let editoras = await getAutenticado("https://livraria-app.herokuapp.com/api/editoras/")
+            editoras = await editoras.json()
+
+            const selectAutor1 = document.getElementById("autores")
+            const selectAutor2s = document.getElementById("autores")
+            const selectCategoria = document.getElementById("categorias")
+            const selectEditora = document.getElementById("editoras") 
+
+            for(const editora of editoras) {
+                const option = document.createElement("option")
+                option.innerText = editora.nome
+                option.value = editora.id
+                selectEditora.appendChild(option)
+            }
+
+            for(const autor of autores) {
+                const option1 = document.createElement("option")
+                option1.innerText = autor.nome
+                option1.value = autor.id
+                selectAutor1.appendChild(option1)
+
+                const option2 = document.createElement("option")
+                option2.innerText = autor.nome
+                option2.value = autor.id
+                selectAutor2.appendChild(option2)
+            }
+
+            
+            for(const categoria of categorias) {
+                const option = document.createElement("option")
+                option.innerText = categoria.nome
+                option.value = categoria.id
+                selectCategoria.appendChild(option)
+            }
+        }
+
+        form.addEventListener("submit", adicionar)
+
+        window.addEventListener("load", preencher)
+
+
+    </script>
+
+</body>
+</html>

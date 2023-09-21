@@ -1,0 +1,3 @@
+function salvarToken(token) {
+    
+}

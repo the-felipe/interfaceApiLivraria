@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Livro</title>
+
+    <script src="token.js"></script>
+
+    <script>
+        // verificamos que o token não é nulo
+        // se ele é, voltamos pra tela de login
+        const token = pegarToken();
+        if (token == null) window.location.replace("./index.html");
+    </script>
+</head>
+
+<body>
+
+    <a href="./home.html">Ver Livros</a>
+
+    <form action="" id="form">
+        <label for="titulo">Titulo</label>
+        <input type="text" name="titulo" id="titulo">
+        <br>
+        <label for="isbn">isbn</label>
+        <input type="text" name="isbn" id="isbn">
+        <br>
+        <label for="quantidade">quantidade</label>
+        <input type="number" name="quantidade" id="quantidade">
+        <br>
+        <label for="preco">Preço</label>
+        <input type="number" name="preco" id="preco">
+        <br>
+        <label for="categoria">Categoria</label>
+        <select name="categoria" id="categoria"></select>
+        <br>
+        <label for="editora">Editora</label>
+        <select name="editora" id="editora"></select>
+        <br>
+        <label for="autor1">Autor 1</label>
+        <select name="autor1" id="autor1"></select>
+        <br>
+        <label for="autor2">Autor 2</label>
+        <select name="autor2" id="autor2"></select>
+        <hr>
+        <input type="submit" value="Adicionar">
+    </form>
+
+    <script>
+
+        // pegamos todos os elementos
+        const form = document.getElementById("form")
+
+        const titulo = document.getElementById("titulo")
+        const isbn = document.getElementById("isbn")
+        const quantidade = document.getElementById("quantidade")
+        const categoria = document.getElementById("categoria")
+        const preco = document.getElementById("preco")
+        const editora = document.getElementById("editora")
+        const autor1 = document.getElementById("autor1")
+        const autor2 = document.getElementById("autor2")
+
+        // função pra adicionar o livro na API
+        async function adicionar(e) {
+            // prevenimos a ação do form de recarregar a página
+            e.preventDefault()
+
+            // construímos o body com os dados coletados dos inputs
+            const body = {
+                titulo: titulo.value,
+                ISBN: isbn.value,
+                preco: +preco.value,
+                quantidade: +quantidade.value,
+                categoria: +categoria.value,
+                editora: +editora.value,
+                autores: [+autor1.value, +autor2.value]
+            }
+
+            // enviamos o livro
+            const resposta = await postAutenticado("https://livraria-app.herokuapp.com/api/livros/", body);
+            const json = await resposta.json()
+            alert("Livro adicionado!")F
+        }
+
+        // função pra preencher os select com os dados disponíveis na API
+        async function preencher() {
+
+            // pegamos os dados da API dos autorse, categorias e editoras
+            let autores = await getAutenticado("https://livraria-app.herokuapp.com/api/autores/")
+            autores = await autores.json()
+
+            let categorias = await getAutenticado("https://livraria-app.herokuapp.com/api/categorias/")
+            categorias = await categorias.json()
+
+            let editoras = await getAutenticado("https://livraria-app.herokuapp.com/api/editoras/")
+            editoras = await editoras.json()
+
+            // selecionamos os selects
+            const selectAutor1 = document.getElementById("autor1")
+            const selectAutor2 = document.getElementById("autor2")
+            const selectCategoria = document.getElementById("categoria")
+            const selectEditora = document.getElementById("editora")
+
+
+            // adicionamos as opções pra cada select
+            for (const editora of editoras) {
+                const option = document.createElement("option")
+                option.innerText = editora.nome
+                option.value = editora.id
+                selectEditora.appendChild(option)
+            }
+
+            for (const autor of autores) {
+                const option1 = document.createElement("option")
+                option1.innerText = autor.nome
+                option1.value = autor.id
+                selectAutor1.appendChild(option1)
+
+                const option2 = document.createElement("option")
+                option2.innerText = autor.nome
+                option2.value = autor.id
+                selectAutor2.appendChild(option2)
+            }
+
+
+            for (const categoria of categorias) {
+                const option = document.createElement("option")
+                option.innerText = categoria.descricao
+                option.value = categoria.id
+                selectCategoria.appendChild(option)
+            }
+        }
+
+        // adicionamos eventos no formulário e na janela
+        form.addEventListener("submit", adicionar)
+        window.addEventListener("load", preencher)
+    </script>
+
+</body>
+
+</html>

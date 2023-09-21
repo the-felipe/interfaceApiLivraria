@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <script src="token.js"></script>
+</head>
+<body>
+    
+    <form id="form" action="">
+        <label for="username">Usuário</label>
+        <input type="text" name="username" id="username">
+
+        <br>
+
+        <label for="password">Senha</label>
+        <input type="password" name="password" id="password">
+
+        <hr>
+
+        <input type="submit" value="Logar">
+    </form>
+
+    <script>
+
+        const form = document.getElementById("form")
+        const username = document.getElementById("username")
+        const password = document.getElementById("password")
+
+        async function logar(e) {
+            e.preventDefault()
+
+            const user = {
+                username: username.value,
+                password: password.value
+            }
+
+            const resposta = await return fetch("https://livraria-app.herokuapp.com/api/token/", {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+
+            if(!resposta.ok) {
+                alert("Usuário/senha inválido!");
+                return;
+            }
+
+            const token = await resposta.json();
+
+            console.log(token)
+
+            salvarToken(token);
+            // redireciona pro home.html
+            window.location.replace("./home.html")
+        }
+
+        form.addEventListener("submit", logar)
+
+    </script>
+    
+</body>
+</html>

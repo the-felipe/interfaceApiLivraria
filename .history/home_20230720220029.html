@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Exemplo de Requisição HTTP</title>
+        <script src="token.js"></script>
+
+        <script>
+            const token = pegarToken();
+            if(token == null) window.location.replace("./index.html");
+        </script>
+
+        <style>
+            .titulo {
+                font-weight: bold;
+                font-size: 1.5rem;
+            }
+
+            .valor {
+                font-size: 1.4rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Biblioteca Batlip</h1>
+        </header>
+
+        <a href="./adicionar.html">Adicionar Livro</a>
+
+        <div id="root">
+
+        </div>
+
+        <script>
+
+            const root = document.getElementById("root")
+
+            // remove todos os livros da página inicial e adiciona eles de novo
+            // isso serve pra atualizar a tela inicial caso tenha mudado os livros na API
+            function reseta() {
+                root.innerHTML = ""
+                fazerRequisicao()
+            }
+
+            // deleta o livro na API e depois reseta a tela
+            function deletarLivro(livro) {
+                deleteAutenticado("https://livraria-app.herokuapp.com/api/livros/" + livro.id + "/")
+                    .then(reseta)
+            }
+
+            // busca os livros e mostra eles na tela 
+            async function fazerRequisicao() {
+                // retorna uma lista de livros
+                const resposta = await getAutenticado('https://livraria-app.herokuapp.com/api/livros/');
+                const livros = await resposta.json();
+
+                // iteramos sobre cada livro e criamos um elemento pra cada propriedade
+                for(const livro of livros) {
+
+                    const ISBN = livro.ISBN
+                    const titulo = livro.titulo
+                    const categoria = livro.categoria
+                    const preco = livro.preco
+                    const quantidade = livro.quantidade
+
+                    // criamos os elementos pra cada propriedade
+
+                    const pISBN = document.createElement("p")
+                    pISBN.innerHTML = `<span class="titulo">ISBN:</span> <span class="valor">${ISBN}</span>`
+
+                    const pTitulo = document.createElement("p")
+                    pTitulo.innerHTML = `<span class="titulo">Título:</span> <span class="valor">${titulo}</span>`
+
+                    const pCategoria = document.createElement("p")
+                    pCategoria.innerHTML = `<span class="titulo">Categoria:</span> <span class="valor">${categoria.nome}</span>`
+
+                    // como os autores são vários, mostramos eles em uma lista
+                    const ulAutores = document.createElement("ul")
+                    for(const autor of livro.autores) {
+                        const liAutor = document.createElement("li")
+                        liAutor.innerHTML = `<span class="titulo">Autor:</span> <span class="valor">${autor.nome}</span>`
+                        ulAutores.appendChild(liAutor)
+                    }
+
+                    const pPreco = document.createElement("p")
+                    pPreco.innerHTML = `<span class="titulo">Preço:</span> <span class="valor">${preco}</span>`
+
+                    const pQuantidade = document.createElement("p")
+                    pQuantidade.innerHTML = `<span class="titulo">Quantidade:</span> <span class="valor">${quantidade}</span>`
+
+                    // criamos um botão pra deletar o livro quando clicad
+                    const bDeletar = document.createElement("button")
+                    bDeletar.innerText = "Deletar"
+                    // passamos uma "função anônima" que chama a função deletaLivro
+                    bDeletar.addEventListener("click", () => deletarLivro(livro))
+
+                    // adiciona todos os elementos na tela
+
+                    root.appendChild(pISBN);
+                    root.appendChild(pTitulo);
+                    root.appendChild(pCategoria);
+                    root.appendChild(pPreco);
+                    root.appendChild(ulAutores);
+                    root.appendChild(pQuantidade);
+                    root.appendChild(bDeletar)
+
+                    root.appendChild(document.createElement("hr"));
+                }
+            }
+
+            window.addEventListener("load", fazerRequisicao)
+        </script>
+    </body>
+    </html>

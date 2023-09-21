@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Exemplo de Requisição HTTP</title>
+        <script src="token.js"></script>
+    </head>
+    <body>
+        <h1>Biblioteca Batlip</h1>
+
+        <div id="root">
+
+        </div>
+
+        <script>
+
+            const root = document.getElementById("root")
+
+            async function fazerRequisicao() {
+                url = 'https://livraria-app.herokuapp.com/api/livros/';
+
+                const resposta = await getAutenticado(url);
+                const livros = await resposta.json();
+
+                for(const livro of resposta.data) {
+
+                    const ISBN = livro.ISBN
+                    const titulo = livro.titulo
+                    const categoria = livro.categoria
+                    const autor = livro.autor
+                    const preco = livro.preco
+                    const quantidade = livro.quantidade
+
+                    const pISBN = document.createElement("p")
+                    pISBN.innerText = "ISBN: " + ISBN
+
+                    const pTitulo = document.createElement("p")
+                    pTitulo.innerText = "Titulo: " + titulo
+
+                    const pCategoria = document.createElement("p")
+                    pCategoria.innerText = "Categoria: " + categoria
+
+                    const pAutor = document.createElement("p")
+                    pAutor.innerText = "Autor: " + autor
+
+                    const pPreco = document.createElement("p")
+                    pPreco.innerText = "Preco: " + preco
+
+                    const pQuantidade = document.createElement("p")
+                    pQuantidade.innerText = "Quantidade: " + quantidade
+
+                    root.appendChild(pISBN);
+                    root.appendChild(pTitulo);
+                    root.appendChild(pCategoria);
+                    root.appendChild(pAutor);
+                    root.appendChild(pPreco);
+                    root.appendChild(pQuantidade);
+                }
+            }
+
+            window.addEventListener("load", fazerRequisicao)
+        </script>
+    </body>
+    </html>
